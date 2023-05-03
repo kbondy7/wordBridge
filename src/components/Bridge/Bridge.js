@@ -13,17 +13,17 @@ export default function Bridge(props) {
     const [currPosition, setCurrPosition] = useState([0,0])
     const [status, setStatus] = useState('')
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
+    
     useEffect(() => {
-        if(props.switch){
-            if(props.pressed === 'Backspace'){
-                if(!(currPosition[0] === 0 && currPosition[1] === 0)){
-                    deleteKey();
-                }
-            } else {
-                detectKeyDown(props.pressed);
+        if(props.pressed === 'Backspace'){
+            if(!(currPosition[0] === 0 && currPosition[1] === 0)){
+                deleteKey();
             }
+        } else {
+            detectKeyDown(props.pressed);
         }
     },[props.switch])
+
     function deleteKey(){
         let copy = JSON.parse(JSON.stringify(currBridge))
         if(currBridge[0]){
