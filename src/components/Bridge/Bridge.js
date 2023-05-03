@@ -1,6 +1,4 @@
-import React, { Component, useEffect } from 'react'
-import Square from './Square/Square'
-import Row from './Row/Row'
+import React, { useEffect } from 'react'
 import GenerateBridge from './GenerateBridge/GenerateBridge';
 import { useState } from 'react';
 import sorted_words from '../../data/sorted_words.json'
@@ -13,13 +11,12 @@ export default function Bridge(props) {
     const [currLetters, setCurrLetters] = useState('')
     const [currBridge, setCurrBridge] = useState([])
     const [currPosition, setCurrPosition] = useState([0,0])
-    const [keydown, setKeyDown] = useState('')
     const [status, setStatus] = useState('')
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
     useEffect(() => {
         if(props.switch){
-            if(props.pressed == 'Backspace'){
-                if(!(currPosition[0] == 0 && currPosition[1] == 0)){
+            if(props.pressed === 'Backspace'){
+                if(!(currPosition[0] === 0 && currPosition[1] === 0)){
                     deleteKey();
                 }
             } else {
@@ -29,7 +26,6 @@ export default function Bridge(props) {
     },[props.switch])
     function deleteKey(){
         let copy = JSON.parse(JSON.stringify(currBridge))
-        let row = copy[0]
         if(currBridge[0]){
             let pos_copy = JSON.parse(JSON.stringify(currPosition))
 
@@ -64,10 +60,10 @@ export default function Bridge(props) {
                 copy[currPosition[1]][currPosition[0]] = key
                 let pos_copy = JSON.parse(JSON.stringify(currPosition))
                 setCurrBridge(copy)
-                if(currPosition[0] == currBridge[0].length -1 && currPosition[1] == currBridge.length -1){
+                if(currPosition[0] === currBridge[0].length -1 && currPosition[1] === currBridge.length -1){
                     validate(copy);
                 } else { 
-                    if(copy[currPosition[1]][currPosition[0]+1] == 1){
+                    if(copy[currPosition[1]][currPosition[0]+1] === 1){
                         pos_copy[0]++
                         setCurrPosition(pos_copy)
                     } else {
@@ -92,7 +88,6 @@ export default function Bridge(props) {
         let copy;
         let outcome;
         let position = [0,0]
-        let p = 0
         while(!(position[0] === final[0] && position[1] === final[1])){
             copy = JSON.parse(JSON.stringify(grid))
             if(directionV){
@@ -109,7 +104,6 @@ export default function Bridge(props) {
                 }
             }
             directionV = !directionV;
-            p++
         }
         first = true
         grid[height-1][width-1] = 1;
@@ -146,7 +140,6 @@ export default function Bridge(props) {
         let firstLetter = '';
         let directionH = true;
         let wordlength = 1;
-        let y = 0;
         let x = 0;
         for (let h = 0; h < grid.length; h++) {
 
@@ -188,7 +181,6 @@ export default function Bridge(props) {
         let valid = true;
         let directionH = true;
         let word = '';
-        let y = 0;
         let x = 0;
         for (let h = 0; h < grid.length; h++) {
 

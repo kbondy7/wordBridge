@@ -1,6 +1,5 @@
 import './App.css';
 import React from 'react'
-import Bridge from '../src/components/Bridge/Bridge.js'
 import Game from './components/Game/Game';
 function App() {
   return (

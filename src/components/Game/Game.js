@@ -1,5 +1,5 @@
 import Bridge from '../Bridge/Bridge'
-import React, { Component, setState } from 'react'
+import React, { Component } from 'react'
 
 
 export default class Game extends Component {
