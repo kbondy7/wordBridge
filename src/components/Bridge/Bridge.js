@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import GenerateBridge from './GenerateBridge/GenerateBridge';
 import { useState } from 'react';
-import sorted_words from '../../data/sorted_words.json'
-import check_words from '../../data/word.json'
+import sorted_words from '../../data/scrabble_words_sorted.json'
+import check_words from '../../data/scrabble_words.json'
 import Letters from './Letters/Letters';
 
 export default function Bridge(props) {
@@ -190,7 +190,7 @@ export default function Bridge(props) {
                         // firstLetter = getWord(wordlength,firstLetter)
                         word = word + grid[h][w]
                         console.log(word, check_words[word])
-                        if(!check_words[word]){
+                        if(word.length >1 && !check_words[word]){
                             valid = false
                         }
                         word = word.slice(-1)
@@ -206,7 +206,7 @@ export default function Bridge(props) {
                     // firstLetter = getWord(wordlength+1,firstLetter)
                     word = word + grid[h][x]
                     console.log(word, check_words[word])
-                    if(!check_words[word]){
+                    if(word.length >1 && !check_words[word]){
                         valid = false
                     }
                     directionH = !directionH

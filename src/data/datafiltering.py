@@ -1,5 +1,5 @@
 import json
-f = open('word.json')
+f = open('scrabble_words.json')
 data = json.load(f)
 
 
@@ -26,7 +26,15 @@ def run():
         # new.setdefault(key[0], []).append(key)
     print('worked')
     json_object = json.dumps(new, indent=4)
-    with open("sample.json", "w") as outfile:
+    with open("scrabble_words_sorted.json", "w") as outfile:
+        outfile.write(json_object)
+
+def run2():
+    new = {}
+    for i in data:
+        new[i] = 1
+    json_object = json.dumps(new, indent=4)
+    with open("scrabble_words.json", "w") as outfile:
         outfile.write(json_object)
 
 if __name__ == '__main__':

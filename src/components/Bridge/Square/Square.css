@@ -1,9 +1,25 @@
-.square-container{
+.square-container-empty{
+    margin: 2px;
     height: 50px;
     width: 50px;
     border: 1px white solid;
+    border-radius: 5px;
+}
+.square-container{
+    text-shadow: 0 0 5px black, 0 0 3px black;
+    margin: 2px;
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    width: 52px;
+    background-image: url(../../../assets/wood.jpg);
+    background-size: 150px;
+    border-radius: 5px;
+    justify-content: center;
+
 }
 .blocked{
+    margin: 2px;
     height: 52px;
     width: 52px;
 }

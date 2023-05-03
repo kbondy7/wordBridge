@@ -1,8 +1,11 @@
 .t{
     display: flex;
+    border: 1px white solid;
+    padding: 5px;
+    width: 40%;
+    margin-bottom: 20px;
+    justify-content: space-between;
 }
 .letter{
-    margin: 5px;
-    border: white 1px dotted;
     width: 30px;
 }

@@ -4,7 +4,7 @@ import React from 'react'
 export default function Square(props) {
   let square;
   if(props.value === 1){
-    square = <div className='square-container'></div>
+    square = <div className='square-container-empty'></div>
   } else {
     square = <div className='square-container'>{props.value}</div>
   }
