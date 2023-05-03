@@ -1,0 +1,9 @@
+.square-container{
+    height: 50px;
+    width: 50px;
+    border: 1px white solid;
+}
+.blocked{
+    height: 52px;
+    width: 52px;
+}

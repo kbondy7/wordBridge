@@ -1,0 +1,8 @@
+.t{
+    display: flex;
+}
+.letter{
+    margin: 5px;
+    border: white 1px dotted;
+    width: 30px;
+}
