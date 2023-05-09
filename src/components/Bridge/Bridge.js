@@ -233,7 +233,7 @@ export default function Bridge(props) {
                 let random = Math.floor( Math.random() * 2 )
                 let w = level[0]
                 let h = level[1]
-                if(random == 1){
+                if(random === 1){
                     w++
                 } else {
                     h++
