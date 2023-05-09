@@ -255,6 +255,10 @@ export default function Bridge(props) {
             startingLetter = alphabet[Math.floor(Math.random() * alphabet.length)]
         }
         const words = sorted_words[length][startingLetter]
+        if(!words){
+            handleGenerate(level[0],level[1])
+        }
+        console.log(words)
         const word = words[Math.floor(Math.random() * words.length)];
         console.log(word)
         if(first){
