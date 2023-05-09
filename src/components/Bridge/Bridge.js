@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from 'react'
+import React, { useEffect } from 'react'
 import GenerateBridge from './GenerateBridge/GenerateBridge';
 import { useState } from 'react';
 import sorted_words from '../../data/scrabble_words_sorted.json'
@@ -14,13 +14,11 @@ export default function Bridge(props) {
     const [currPosition, setCurrPosition] = useState([0,0])
     const [status, setStatus] = useState('')
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
-    let start = false;
     
     useEffect(() => {
-        if(bridge.length==0){
+        if(bridge.length === 0){
             console.log("useefcet")
             handleGenerate(level[0],level[1])
-            start = true
         }
         if(props.pressed === 'Backspace'){
             if(!(currPosition[0] === 0 && currPosition[1] === 0)){
