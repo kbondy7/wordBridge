@@ -284,6 +284,7 @@ export default function Bridge(props) {
     }
   return (
     <>
+        <div>LEVEL: {level[0]+level[1] - 3}</div>
         <div>{props.time}</div>
         <div>{status}</div>
       <GenerateBridge data={currBridge}></GenerateBridge>
