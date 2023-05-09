@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Component } from 'react'
 import GenerateBridge from './GenerateBridge/GenerateBridge';
 import { useState } from 'react';
 import sorted_words from '../../data/scrabble_words_sorted.json'
@@ -7,20 +7,29 @@ import Letters from './Letters/Letters';
 
 export default function Bridge(props) {
     const [bridge, setBridge] = useState([])
+    const [level, setLevel] = useState([3,1])
     const [letters, setLetters] = useState('')
     const [currLetters, setCurrLetters] = useState('')
     const [currBridge, setCurrBridge] = useState([])
     const [currPosition, setCurrPosition] = useState([0,0])
     const [status, setStatus] = useState('')
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
+    let start = false;
     
     useEffect(() => {
+        if(bridge.length==0){
+            console.log("useefcet")
+            handleGenerate(level[0],level[1])
+            start = true
+        }
         if(props.pressed === 'Backspace'){
             if(!(currPosition[0] === 0 && currPosition[1] === 0)){
                 deleteKey();
             }
         } else {
-            detectKeyDown(props.pressed);
+            if(!(currPosition[1] === currBridge.length  || currPosition[0] === currBridge[0].length)){
+                detectKeyDown(props.pressed);
+            }
         }
     },[props.switch])
 
@@ -29,7 +38,7 @@ export default function Bridge(props) {
         if(currBridge[0]){
             let pos_copy = JSON.parse(JSON.stringify(currPosition))
 
-            if(alphabet.includes(copy[currPosition[1]][currPosition[0]-1])){
+            if(copy[currPosition[1]] && alphabet.includes(copy[currPosition[1]][currPosition[0]-1])){
                 console.log("left")
                 pos_copy[0]--
                 setCurrPosition(pos_copy)
@@ -45,7 +54,6 @@ export default function Bridge(props) {
         }
     }
     function detectKeyDown(key){
-        console.log(currLetters.includes(key))
         if(currLetters.includes(key)){
             let copy = JSON.parse(JSON.stringify(currBridge))
             let copyLetters = JSON.parse(JSON.stringify(currLetters))
@@ -62,7 +70,7 @@ export default function Bridge(props) {
                 setCurrBridge(copy)
                 if(currPosition[0] === currBridge[0].length -1 && currPosition[1] === currBridge.length -1){
                     validate(copy);
-                } else { 
+                } 
                     if(copy[currPosition[1]][currPosition[0]+1] === 1){
                         pos_copy[0]++
                         setCurrPosition(pos_copy)
@@ -70,13 +78,13 @@ export default function Bridge(props) {
                         pos_copy[1]++
                         setCurrPosition(pos_copy)
                     }
-                }
 
             }
         }
     }
     let first = true;
     function handleGenerate(width, height){
+        console.log("generating")
         setCurrPosition([0,0])
         setStatus('')
         // const row = new Array(width).fill(0);
@@ -222,14 +230,25 @@ export default function Bridge(props) {
         if(valid){
             setStatus('Correct')
             setTimeout(function(){
-                handleGenerate(6,6)
-            }, 1000)
+                let random = Math.floor( Math.random() * 2 )
+                let w = level[0]
+                let h = level[1]
+                if(random == 1){
+                    w++
+                } else {
+                    h++
+                }
+                handleGenerate(w,h)
+                setLevel([w,h])
+            }, 2000)
         } else{
-            setCurrBridge(bridge);
-            setCurrLetters(letters);
-            setCurrPosition([0,0])
             setStatus('Oops Try Again')
         }
+    }
+    function clear(){
+        setCurrBridge(bridge);
+        setCurrLetters(letters);
+        setCurrPosition([0,0])
     }
 
     function getWord(length, startingLetter){
@@ -267,10 +286,13 @@ export default function Bridge(props) {
     }
   return (
     <>
-    <Letters data={currLetters}></Letters>
+        <div>{props.time}</div>
+        <div>{status}</div>
       <GenerateBridge data={currBridge}></GenerateBridge>
-      <div>{status}</div>
-      <button onClick={function(){handleGenerate(6,6)}}>generate bridge</button>
+      <Letters data={currLetters}></Letters>
+      
+      <button onClick={clear}>Clear</button>
+      {/* <button onClick={function(){handleGenerate(6,6)}}>generate bridge</button> */}
       </>
   )
 }
