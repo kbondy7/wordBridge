@@ -4,21 +4,23 @@ import { useState } from 'react';
 import sorted_words from '../../data/scrabble_words_sorted.json'
 import check_words from '../../data/scrabble_words.json'
 import Letters from './Letters/Letters';
-
+import points from '../../data/point_values.json'
 export default function Bridge(props) {
     const [bridge, setBridge] = useState([])
-    const [level, setLevel] = useState([3,1])
+    const [level, setLevel] = useState(4)
     const [letters, setLetters] = useState('')
     const [currLetters, setCurrLetters] = useState('')
     const [currBridge, setCurrBridge] = useState([])
     const [currPosition, setCurrPosition] = useState([0,0])
     const [status, setStatus] = useState('')
+    const [extraLetters, setExtraLetters] = useState(3);
+    const [score, setScore] = useState(0)
     const alphabet = "abcdefghijklmnopqrstuvwxyz"
+    const vowels = "aeiou"
     
     useEffect(() => {
         if(bridge.length === 0){
-            console.log("useefcet")
-            handleGenerate(level[0],level[1])
+            handleGenerate(3,1, extraLetters)
         }
         if(props.pressed === 'Backspace'){
             if(!(currPosition[0] === 0 && currPosition[1] === 0)){
@@ -37,11 +39,9 @@ export default function Bridge(props) {
             let pos_copy = JSON.parse(JSON.stringify(currPosition))
 
             if(copy[currPosition[1]] && alphabet.includes(copy[currPosition[1]][currPosition[0]-1])){
-                console.log("left")
                 pos_copy[0]--
                 setCurrPosition(pos_copy)
             } else {
-                console.log("up")
                 pos_copy[1]--
                 setCurrPosition(pos_copy)
             }
@@ -81,8 +81,7 @@ export default function Bridge(props) {
         }
     }
     let first = true;
-    function handleGenerate(width, height){
-        console.log("generating")
+    function handleGenerate(width, height, extra){
         setCurrPosition([0,0])
         setStatus('')
         // const row = new Array(width).fill(0);
@@ -115,7 +114,7 @@ export default function Bridge(props) {
         grid[height-1][width-1] = 1;
         setBridge(grid);
         setCurrBridge(grid);
-        generateLetters(grid);
+        generateLetters(grid, extra);
     }
     function lateralLine(grid, position, width, height){
         let lateral = Math.floor(Math.random() * (width - position[0])) + 1
@@ -142,7 +141,9 @@ export default function Bridge(props) {
         }
         return [grid, position]
     }
-    function generateLetters(grid){
+    function generateLetters(grid, extra){
+        console.log("generate: ", grid,extra)
+        let redo = false;
         let firstLetter = '';
         let directionH = true;
         let wordlength = 1;
@@ -153,6 +154,9 @@ export default function Bridge(props) {
                 for (let w = x; w < grid[0].length; w++) {
                     if(!grid[h][w+1]){
                         firstLetter = getWord(wordlength,firstLetter)
+                        if(firstLetter === '0'){
+                            redo = true;
+                        }
                         wordlength = 1
                         x = w;
                         directionH = !directionH
@@ -164,6 +168,9 @@ export default function Bridge(props) {
             } else{
                 if(!grid[h+1] || !grid[h+1][x]){
                     firstLetter = getWord(wordlength+1,firstLetter)
+                    if(firstLetter === '0'){
+                        redo = true;
+                    }
                     directionH = !directionH
                     wordlength = 1
                     h--;
@@ -172,22 +179,38 @@ export default function Bridge(props) {
                 }
             }    
         }
-        addExtraLetters(3)
+        addExtraLetters(extra)
+        if(redo){
+            setLetters('')
+            setCurrLetters('')
+            generateLetters(grid, extra)
+        }
     }
     function addExtraLetters(num){
         let letters = ''
-        for (let index = 0; index < num; index++) {
+        for (let index = 0; index < num-1; index++) {
             letters=letters+alphabet[Math.floor(Math.random() * alphabet.length)] 
         }
-        console.log(letters)
+        letters = letters + vowels[Math.floor(Math.random() * vowels.length)]
         setCurrLetters((previous)=>randomizeString( previous+letters))
         setLetters((previous)=>randomizeString( previous+letters))
+    }
+    function getWordScore(word){
+        let output = 0;
+        if(word.length > 1){
+            [...word].forEach(element => {
+                output = output + points[element]
+            });
+        }   
+        return output;
     }
     function validate(grid){
         let valid = true;
         let directionH = true;
         let word = '';
         let x = 0;
+        let levelScore = 0;
+        let first = true;
         for (let h = 0; h < grid.length; h++) {
 
             if(directionH){
@@ -195,9 +218,16 @@ export default function Bridge(props) {
                     if(!grid[h][w+1]){
                         // firstLetter = getWord(wordlength,firstLetter)
                         word = word + grid[h][w]
-                        console.log(word, check_words[word])
-                        if(word.length >1 && !check_words[word]){
-                            valid = false
+                        if(word.length >1){
+                            if(first){
+                                levelScore = levelScore + getWordScore(word)
+                                first = false
+                            } else{
+                                levelScore = levelScore + getWordScore(word.slice(1))
+                            }
+                            if(!check_words[word]){
+                                valid = false
+                            }
                         }
                         word = word.slice(-1)
                         x = w;
@@ -211,9 +241,16 @@ export default function Bridge(props) {
                 if(!grid[h+1] || !grid[h+1][x]){
                     // firstLetter = getWord(wordlength+1,firstLetter)
                     word = word + grid[h][x]
-                    console.log(word, check_words[word])
-                    if(word.length >1 && !check_words[word]){
-                        valid = false
+                    if(word.length >1){
+                        if(first){
+                            levelScore = levelScore + getWordScore(word)
+                            first = false
+                        } else{
+                            levelScore = levelScore + getWordScore(word.slice(1))
+                        }
+                        if(!check_words[word]){
+                            valid = false
+                        }
                     }
                     directionH = !directionH
                     word = ''
@@ -222,23 +259,30 @@ export default function Bridge(props) {
                     word = word + grid[h][x]
                 }
             }
-            
-        }
+        }       
         console.log("valid: ", valid)
         if(valid){
+            setScore((prev) => prev+levelScore)
             setStatus('Correct')
             setTimeout(function(){
                 let random = Math.floor( Math.random() * 2 )
-                let w = level[0]
-                let h = level[1]
-                if(random === 1){
-                    w++
+                let split = Math.floor(Math.random() * (level-1))+1
+                let w = split
+                let h = level - split
+                if(extraLetters === 3){
+                    if(random === 1){
+                        w++
+                    } else {
+                        h++
+                    }
+                    setExtraLetters(w+h-1);
+                    handleGenerate(w,h, w+h-1)
+                    setLevel(w+h)
                 } else {
-                    h++
+                    handleGenerate(w,h, extraLetters-1)
+                    setExtraLetters((previous) =>previous-1)
                 }
-                handleGenerate(w,h)
-                setLevel([w,h])
-            }, 2000)
+            }, 1500)
         } else{
             setStatus('Oops Try Again')
         }
@@ -256,11 +300,11 @@ export default function Bridge(props) {
         }
         const words = sorted_words[length][startingLetter]
         if(!words){
-            handleGenerate(level[0],level[1])
+            console.log("OH NO IT BROKE")
+            return '0'
         }
-        console.log(words)
         const word = words[Math.floor(Math.random() * words.length)];
-        console.log(word)
+        console.log("generated word: ", word)
         if(first){
             setLetters((previous)=>previous+word)
             setCurrLetters((previous)=>previous+word)
@@ -288,7 +332,7 @@ export default function Bridge(props) {
     }
   return (
     <>
-        <div>LEVEL: {level[0]+level[1] - 3}</div>
+        <div>SCORE: {score}</div>
         <div>{props.time}</div>
         <div>{status}</div>
       <GenerateBridge data={currBridge}></GenerateBridge>

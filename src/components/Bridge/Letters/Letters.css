@@ -1,11 +1,24 @@
 .t{
     display: flex;
-    border: 1px white solid;
     padding: 5px;
     width: 40%;
     margin-bottom: 20px;
     justify-content: space-between;
 }
+.letter-container{
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    border: #FED766 1px solid;
+    background-color: #FED766;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .letter{
-    width: 30px;
+    margin-top: 7.5px;
+}
+.point{
+    margin-left: 35px;
+    font-size: 10px;
 }
