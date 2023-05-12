@@ -1,0 +1,18 @@
+.game{
+    height: 100vh;
+    width: 100vw;
+}
+.container{
+    display: flex;
+    justify-content: center;
+}
+.bridge{
+    height: 60%;
+}
+.m{
+    margin-top: 50px;
+}
+.clear-button{
+    background-color: #FF3C38;
+
+}

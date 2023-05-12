@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react'
 import GenerateBridge from './GenerateBridge/GenerateBridge';
+import IconButton from '@mui/material/IconButton';
 import { useState } from 'react';
+import Timer from './Timer/Timer';
 import sorted_words from '../../data/scrabble_words_sorted.json'
 import check_words from '../../data/scrabble_words.json'
 import Letters from './Letters/Letters';
 import points from '../../data/point_values.json'
+import './Bridge.css'
+import ClearIcon from '@mui/icons-material/Clear';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 export default function Bridge(props) {
     const [bridge, setBridge] = useState([])
     const [level, setLevel] = useState(4)
@@ -262,6 +268,7 @@ export default function Bridge(props) {
         }       
         console.log("valid: ", valid)
         if(valid){
+            props.setTime()
             setScore((prev) => prev+levelScore)
             setStatus('Correct')
             setTimeout(function(){
@@ -288,6 +295,7 @@ export default function Bridge(props) {
         }
     }
     function clear(){
+        console.log("trigger")
         setCurrBridge(bridge);
         setCurrLetters(letters);
         setCurrPosition([0,0])
@@ -332,15 +340,25 @@ export default function Bridge(props) {
     }
   return (
     <>
+    <div className='game'>
+        <div className='container m'>
+            <Timer time={props.time}></Timer>
+        </div>
+
         <div>SCORE: {score}</div>
-        <div>{props.time}</div>
+        
+        <div className='container bridge'>
+            <GenerateBridge data={currBridge}></GenerateBridge>
+        </div>
+        <div className='container'>
+            <Letters data={currLetters}></Letters>
+        </div>
         <div>{status}</div>
-      <GenerateBridge data={currBridge}></GenerateBridge>
-      <Letters data={currLetters}></Letters>
       
-      <button onClick={clear}>Clear</button>
-      {/* <button onClick={function(){handleGenerate(6,6)}}>generate bridge</button> */}
-      </>
+      <IconButton className='clear-button' size="large" onClick={clear}><ClearIcon fontSize="inherit" style={{color:'#FF3C38'}}></ClearIcon></IconButton>
+      <IconButton className='clear-button' size="large" onClick={deleteKey}><ArrowBackIcon fontSize="inherit" style={{color:'#00BBF9'}}></ArrowBackIcon></IconButton>
+    </div>
+    </>
   )
 }
 

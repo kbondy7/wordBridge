@@ -8,6 +8,6 @@ export default function GenerateBridge(props) {
         return(<Row key={keyValue} row={value}></Row>)
     })
   return (
-    <div>{bridge}</div>
+    <div style={{margin:'auto'}}>{bridge}</div>
   )
 }
