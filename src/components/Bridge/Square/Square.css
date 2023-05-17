@@ -16,6 +16,17 @@
     justify-content: center;
 
 }
+.square-container-filled{
+    margin: 2px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    width: 50px;
+    border: 2px #00BBF9 solid;
+    border-radius: 5px;
+    justify-content: center;
+    color: #00BBF9;
+}
 .blocked{
     margin: 2px;
     height: 54px;

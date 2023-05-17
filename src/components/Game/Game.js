@@ -30,7 +30,11 @@ export default class Game extends Component {
   render() {
     return (
       <>
-        {this.state.lose && <div>YOU LOSE</div>}
+        {this.state.lose && 
+        <div>
+          <div>YOU LOSE</div>
+          <button>start over</button>
+        </div>}
         {!this.state.lose && <Bridge pressed={this.state.keydown} switch = {this.state.switch} time={this.state.time} setTime={this.addTime.bind(this)}></Bridge>}
       </>
     )
