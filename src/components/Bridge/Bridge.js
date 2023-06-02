@@ -37,27 +37,35 @@ export default function Bridge(props) {
                 detectKeyDown(props.pressed);
             }
         }
-    },[props.switch])
+        if(props.lose === true){
+            setBridge([])
+            setCurrPosition([0,0])
+            setScore(0)
+            setLevel(4)
+        }
+    },[props.switch, props.lose])
 
     function deleteKey(){
-        let copy = JSON.parse(JSON.stringify(currBridge))
-        if(currBridge[0]){
-            let pos_copy = JSON.parse(JSON.stringify(currPosition))
+        if(!(currPosition[0] === 0 && currPosition[1] === 0)){
+            let copy = JSON.parse(JSON.stringify(currBridge))
+            if(currBridge[0]){
+                let pos_copy = JSON.parse(JSON.stringify(currPosition))
+                if(copy[currPosition[1]] && copy[currPosition[1]][currPosition[0]-1] && alphabet.includes(copy[currPosition[1]][currPosition[0]-1].toLowerCase())){
+                    pos_copy[0]--
+                    setCurrPosition(pos_copy)
+                } else {
+                    pos_copy[1]--
+                    setCurrPosition(pos_copy)
+                }
+                setCurrLetters(currLetters + copy[pos_copy[1]][pos_copy[0]])
+                copy[pos_copy[1]][pos_copy[0]] = 1;
+                setCurrBridge(copy)
 
-            if(copy[currPosition[1]] && alphabet.includes(copy[currPosition[1]][currPosition[0]-1])){
-                pos_copy[0]--
-                setCurrPosition(pos_copy)
-            } else {
-                pos_copy[1]--
-                setCurrPosition(pos_copy)
             }
-            setCurrLetters(currLetters + copy[pos_copy[1]][pos_copy[0]])
-            copy[pos_copy[1]][pos_copy[0]] = 1;
-            setCurrBridge(copy)
-
         }
     }
     function detectKeyDown(key){
+        key = key.toUpperCase();
         if(currLetters.includes(key)){
             let copy = JSON.parse(JSON.stringify(currBridge))
             let copyLetters = JSON.parse(JSON.stringify(currLetters))
@@ -155,7 +163,6 @@ export default function Bridge(props) {
         let wordlength = 1;
         let x = 0;
         for (let h = 0; h < grid.length; h++) {
-
             if(directionH){
                 for (let w = x; w < grid[0].length; w++) {
                     if(!grid[h][w+1]){
@@ -198,6 +205,7 @@ export default function Bridge(props) {
             letters=letters+alphabet[Math.floor(Math.random() * alphabet.length)] 
         }
         letters = letters + vowels[Math.floor(Math.random() * vowels.length)]
+        letters = letters.toUpperCase();
         setCurrLetters((previous)=>randomizeString( previous+letters))
         setLetters((previous)=>randomizeString( previous+letters))
     }
@@ -231,7 +239,7 @@ export default function Bridge(props) {
                             } else{
                                 levelScore = levelScore + getWordScore(word.slice(1))
                             }
-                            if(!check_words[word]){
+                            if(!check_words[word.toLowerCase()]){
                                 valid = false
                             }
                         }
@@ -254,7 +262,7 @@ export default function Bridge(props) {
                         } else{
                             levelScore = levelScore + getWordScore(word.slice(1))
                         }
-                        if(!check_words[word]){
+                        if(!check_words[word.toLowerCase()]){
                             valid = false
                         }
                     }
@@ -306,12 +314,13 @@ export default function Bridge(props) {
         if(startingLetter === ''){
             startingLetter = alphabet[Math.floor(Math.random() * alphabet.length)]
         }
-        const words = sorted_words[length][startingLetter]
+        const words = sorted_words[length][startingLetter.toLowerCase()]
+        console.log(startingLetter, words, length)
         if(!words){
             console.log("OH NO IT BROKE")
             return '0'
         }
-        const word = words[Math.floor(Math.random() * words.length)];
+        const word = words[Math.floor(Math.random() * words.length)].toUpperCase();
         console.log("generated word: ", word)
         if(first){
             setLetters((previous)=>previous+word)
@@ -351,7 +360,7 @@ export default function Bridge(props) {
             <GenerateBridge data={currBridge}></GenerateBridge>
         </div>
         <div className='container'>
-            <Letters data={currLetters}></Letters>
+            <Letters data={currLetters} detectKeyDown={detectKeyDown}></Letters>
         </div>
         <div>{status}</div>
       
