@@ -1,6 +1,5 @@
 import Bridge from '../Bridge/Bridge'
 import React, { Component } from 'react'
-import GenerateBridge from '../Bridge/GenerateBridge/GenerateBridge';
 import { Button } from '@mui/material';
 
 export default class Game extends Component {
